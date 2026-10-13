@@ -1,0 +1,20 @@
+<%-- Encabezado común: se incluye con la directiva include en todas las páginas --%>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventario | Tienda de Abarrotes</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
+</head>
+<body>
+<header class="barra">
+    <a class="marca" href="${pageContext.request.contextPath}/">&#129530; Tienda de Abarrotes</a>
+    <nav>
+        <a href="${pageContext.request.contextPath}/productos">Productos</a>
+        <a href="${pageContext.request.contextPath}/productos?reponer=1">Por reponer</a>
+        <a href="${pageContext.request.contextPath}/productos?accion=nuevo">Nuevo producto</a>
+    </nav>
+</header>
+<main class="contenido">

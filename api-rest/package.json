@@ -1,0 +1,26 @@
+{
+  "name": "api-tienda-abarrotes",
+  "version": "1.0.0",
+  "description": "API REST del sistema de inventario y ventas de la tienda de abarrotes (GA7-220501096-AA5-EV03)",
+  "main": "src/servidor.js",
+  "scripts": {
+    "start": "node src/servidor.js",
+    "dev": "node --watch src/servidor.js",
+    "test:postman": "newman run postman/api-tienda-abarrotes.postman_collection.json -e postman/local.postman_environment.json"
+  },
+  "author": "Mauricio Vargas - Ficha 3186699",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.5"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Proveedores')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta">
+        <div class="titulo">
+            <h1>Proveedores</h1>
+            <a class="btn" th:href="@{/proveedores/nuevo}">+ Nuevo proveedor</a>
+        </div>
+        <th:block th:replace="~{fragmentos :: mensajes}"></th:block>
+
+        <form class="busqueda" method="get" th:action="@{/proveedores}">
+            <label for="q">Buscar por nombre o NIT</label>
+            <input id="q" name="q" type="search" th:value="${q}" maxlength="100">
+            <button class="btn secundario" type="submit">Buscar</button>
+            <a th:href="@{/proveedores}">Ver todos</a>
+        </form>
+
+        <table>
+            <thead>
+            <tr><th>ID</th><th>NIT</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(proveedores)}"><td colspan="6" class="vacio">No se encontraron proveedores.</td></tr>
+            <tr th:each="p : ${proveedores}">
+                <td th:text="${p.idProveedor}"></td>
+                <td th:text="${p.nit}"></td>
+                <td th:text="${p.nombre}"></td>
+                <td th:text="${p.telefono} ?: '—'"></td>
+                <td th:text="${p.correo} ?: '—'"></td>
+                <td class="acciones">
+                    <a class="btn secundario" th:href="@{/proveedores/{id}/editar(id=${p.idProveedor})}">Editar</a>
+                    <!-- Eliminar usa POST porque modifica datos -->
+                    <form method="post" th:action="@{/proveedores/{id}/eliminar(id=${p.idProveedor})}"
+                          onsubmit="return confirm('¿Eliminar este proveedor?');">
+                        <button class="btn peligro" type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="nota" th:text="${#lists.size(proveedores)} + ' proveedor(es).'"></p>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

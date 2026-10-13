@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Compras')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta">
+        <div class="titulo">
+            <h1>Compras a proveedores</h1>
+            <a class="btn" th:href="@{/compras/nueva}">+ Registrar compra</a>
+        </div>
+        <th:block th:replace="~{fragmentos :: mensajes}"></th:block>
+        <table>
+            <thead>
+            <tr><th>N.º</th><th>Fecha</th><th>Factura</th><th>Proveedor</th><th class="num">Unidades</th><th class="num">Total</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(compras)}"><td colspan="7" class="vacio">No hay compras registradas.</td></tr>
+            <tr th:each="c : ${compras}">
+                <td th:text="${c.idCompra}"></td>
+                <td th:text="${#temporals.format(c.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${c.numeroFactura}"></td>
+                <td th:text="${c.proveedor}"></td>
+                <td class="num" th:text="${c.unidades}"></td>
+                <td class="num" th:text="'$' + ${#numbers.formatDecimal(c.total, 1, 'POINT', 0, 'COMMA')}"></td>
+                <td><a class="btn secundario" th:href="@{/compras/{id}(id=${c.idCompra})}">Ver</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

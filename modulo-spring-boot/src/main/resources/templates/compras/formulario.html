@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Registrar compra')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta">
+        <h1>Registrar compra</h1>
+        <p class="nota">Al guardar, las unidades se suman al inventario y se actualiza el costo de cada producto.</p>
+
+        <form method="post" th:action="@{/compras/registrar}" th:object="${compra}" novalidate>
+            <!-- Los errores de los renglones se convierten en mensajes generales en el controlador -->
+            <div class="mensaje error" role="alert" th:if="${#fields.hasAnyErrors()}">
+                <strong>Revise los datos:</strong>
+                <ul th:if="${#fields.hasGlobalErrors()}"><li th:each="e : ${#fields.globalErrors()}" th:text="${e}"></li></ul>
+            </div>
+
+            <div class="fila formulario" style="max-width:none">
+                <label>Proveedor
+                    <select th:field="*{idProveedor}" th:errorclass="invalido">
+                        <option value="">— Seleccione —</option>
+                        <option th:each="p : ${proveedores}" th:value="${p.idProveedor}" th:text="${p.nombre}"></option>
+                    </select>
+                    <span class="campo-error" th:if="${#fields.hasErrors('idProveedor')}" th:errors="*{idProveedor}"></span>
+                </label>
+                <label>N.º de factura
+                    <input th:field="*{numeroFactura}" maxlength="20" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('numeroFactura')}" th:errors="*{numeroFactura}"></span>
+                </label>
+                <label>Fecha de la factura
+                    <input type="date" th:field="*{fecha}" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+                </label>
+            </div>
+
+            <table class="renglones">
+                <thead><tr><th>#</th><th style="width:50%">Producto</th><th>Cantidad</th><th>Costo unitario</th></tr></thead>
+                <tbody>
+                <!-- Cada renglón se enlaza con lineas[i] del formulario -->
+                <tr th:each="linea, i : *{lineas}">
+                    <td th:text="${i.count}"></td>
+                    <td>
+                        <select th:field="*{lineas[__${i.index}__].idProducto}">
+                            <option value="">— Sin producto —</option>
+                            <option th:each="pr : ${productos}" th:value="${pr.idProducto}"
+                                    th:text="${pr.nombre} + ' (stock ' + ${pr.stock} + ')'"></option>
+                        </select>
+                    </td>
+                    <td><input type="number" min="1" th:field="*{lineas[__${i.index}__].cantidad}" th:errorclass="invalido"></td>
+                    <td><input type="number" min="1" step="0.01" th:field="*{lineas[__${i.index}__].costoUnitario}" th:errorclass="invalido"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="botones">
+                <a class="btn secundario" th:href="@{/compras}">Cancelar</a>
+                <button class="btn" type="submit">Guardar compra</button>
+            </div>
+        </form>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

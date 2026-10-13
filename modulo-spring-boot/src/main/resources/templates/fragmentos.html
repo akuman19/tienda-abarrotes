@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!-- Fragmentos reutilizables: encabezado, mensajes y pie de página -->
+<head th:fragment="cabeza(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Tienda de Abarrotes'">Tienda de Abarrotes</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<header class="barra" th:fragment="barra">
+    <a class="marca" th:href="@{/}">&#129530; Tienda de Abarrotes</a>
+    <nav>
+        <a th:href="@{/proveedores}">Proveedores</a>
+        <a th:href="@{/proveedores/nuevo}">Nuevo proveedor</a>
+        <a th:href="@{/compras}">Compras</a>
+        <a th:href="@{/compras/nueva}">Registrar compra</a>
+    </nav>
+</header>
+
+<th:block th:fragment="mensajes">
+    <p class="mensaje exito" th:if="${exito}" th:text="${exito}" role="status"></p>
+    <p class="mensaje error" th:if="${error}" th:text="${error}" role="alert"></p>
+</th:block>
+
+<footer class="pie" th:fragment="pie">Módulo con Spring Boot · Mauricio Vargas · ADSO 3186699</footer>
+</body>
+</html>

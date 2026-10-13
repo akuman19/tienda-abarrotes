@@ -1,0 +1,48 @@
+:root{--verde:#1F6B3A;--verde-osc:#154D29;--verde-claro:#E6F2EA;--mostaza:#E8A33D;--rojo:#B83227;--rojo-claro:#FBE7E5;--fondo:#F7F5EF;--borde:#DEDAD0;--texto:#1E2A22;--suave:#5B665E}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--fondo);color:var(--texto);font-size:15px}
+.barra{background:var(--verde-osc);color:#fff;display:flex;align-items:center;gap:24px;padding:14px 28px;flex-wrap:wrap}
+.barra a{color:#fff;text-decoration:none}
+.marca{font-weight:700;font-size:1.15rem}
+.barra nav{display:flex;gap:18px}
+.barra nav a{opacity:.9}.barra nav a:hover{opacity:1;text-decoration:underline}
+.contenido{max-width:1150px;margin:24px auto;padding:0 20px}
+.tarjeta{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.titulo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:1.4rem;margin:0 0 14px}
+.btn{display:inline-block;background:var(--verde);color:#fff;border:1px solid var(--verde);border-radius:7px;padding:8px 14px;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--verde-osc)}
+.btn.secundario{background:#fff;color:var(--verde)}
+.btn.peligro{background:var(--rojo);border-color:var(--rojo)}
+.busqueda{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:10px 0 16px}
+.busqueda label{display:flex;flex-direction:column;font-weight:600;font-size:.88rem;gap:4px}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--borde);border-radius:7px;min-width:220px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 8px;border-bottom:1px solid var(--borde);text-align:left}
+th{font-size:.78rem;text-transform:uppercase;color:var(--suave);background:#FAF9F5}
+.num{text-align:right;white-space:nowrap}
+.acciones{display:flex;gap:6px;white-space:nowrap}
+.acciones form{margin:0}
+.acciones .btn{padding:5px 10px;font-size:.85rem}
+.insignia{padding:2px 9px;border-radius:999px;font-size:.75rem;font-weight:700}
+.insignia.ok{background:var(--verde-claro);color:var(--verde)}
+.insignia.bajo{background:var(--rojo-claro);color:var(--rojo)}
+.mensaje{padding:10px 14px;border-radius:7px;margin:8px 0 14px}
+.mensaje.exito{background:var(--verde-claro);color:var(--verde-osc)}
+.mensaje.error{background:var(--rojo-claro);color:var(--rojo)}
+.mensaje ul{margin:6px 0 0;padding-left:20px}
+.vacio,.nota{color:var(--suave)}
+.formulario{max-width:760px}
+.formulario label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem;margin-bottom:12px;flex:1}
+.formulario input,.formulario select{min-width:0;width:100%}
+.fila{display:flex;gap:16px}
+.botones{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+.pie{text-align:center;color:var(--suave);font-size:.8rem;padding:20px}
+@media (max-width:700px){.fila{flex-direction:column;gap:0}.acciones{flex-direction:column}}
+.campo-error{color:var(--rojo);font-weight:400;font-size:.82rem}
+input.invalido,select.invalido{border-color:var(--rojo);background:var(--rojo-claro)}
+.renglones td{padding:6px 4px}.renglones input,.renglones select{min-width:0;width:100%}
+.total{font-size:1.1rem;font-weight:700;text-align:right;margin-top:10px}
+.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.datos div{background:#FAF9F5;border:1px solid var(--borde);border-radius:7px;padding:8px 12px}
+.datos span{display:block;font-size:.75rem;color:var(--suave);text-transform:uppercase}

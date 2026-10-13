@@ -1,0 +1,22 @@
+{
+  "name": "frontend-tienda-abarrotes",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Front-end en React del sistema de inventario y ventas (GA7-220501096-AA4-EV03)",
+  "author": "Mauricio Vargas - Ficha 3186699",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

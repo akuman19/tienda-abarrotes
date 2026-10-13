@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Detalle de compra')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta">
+        <div class="titulo">
+            <h1 th:text="'Compra N.º ' + ${resumen.idCompra}">Compra</h1>
+            <a class="btn secundario" th:href="@{/compras}">Volver</a>
+        </div>
+        <th:block th:replace="~{fragmentos :: mensajes}"></th:block>
+        <div class="datos">
+            <div><span>Proveedor</span><strong th:text="${resumen.proveedor}"></strong></div>
+            <div><span>Factura</span><strong th:text="${resumen.numeroFactura}"></strong></div>
+            <div><span>Fecha</span><strong th:text="${#temporals.format(resumen.fecha, 'dd/MM/yyyy HH:mm')}"></strong></div>
+        </div>
+        <table>
+            <thead><tr><th>Producto</th><th class="num">Cantidad</th><th class="num">Costo unitario</th><th class="num">Subtotal</th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${detalle}">
+                <td th:text="${d.producto}"></td>
+                <td class="num" th:text="${d.cantidad}"></td>
+                <td class="num" th:text="'$' + ${#numbers.formatDecimal(d.costoUnitario, 1, 'POINT', 0, 'COMMA')}"></td>
+                <td class="num" th:text="'$' + ${#numbers.formatDecimal(d.subtotal(), 1, 'POINT', 0, 'COMMA')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="total" th:text="'Total: $' + ${#numbers.formatDecimal(resumen.total, 1, 'POINT', 0, 'COMMA')}"></p>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

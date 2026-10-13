@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Error')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta">
+        <h1>Ocurrió un problema</h1>
+        <p class="mensaje error" th:text="${mensaje} ?: 'La página solicitada no está disponible.'"></p>
+        <a class="btn" th:href="@{/}">Ir al inicio</a>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeza('Proveedor')}"></head>
+<body>
+<header th:replace="~{fragmentos :: barra}"></header>
+<main class="contenido">
+    <section class="tarjeta formulario">
+        <h1 th:text="${proveedor.idProveedor == null} ? 'Registrar proveedor' : 'Editar proveedor'">Proveedor</h1>
+
+        <div class="mensaje error" role="alert" th:if="${#fields.hasErrors('${proveedor.*}')}">
+            <strong>Revise los datos marcados.</strong>
+        </div>
+
+        <!-- th:object enlaza el formulario con el objeto Proveedor; novalidate deja la validación al servidor -->
+        <form method="post" th:action="@{/proveedores/guardar}" th:object="${proveedor}" novalidate>
+            <input type="hidden" th:field="*{idProveedor}">
+            <div class="fila">
+                <label>NIT
+                    <input th:field="*{nit}" maxlength="10" inputmode="numeric" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('nit')}" th:errors="*{nit}"></span>
+                </label>
+                <label>Nombre
+                    <input th:field="*{nombre}" maxlength="100" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                </label>
+            </div>
+            <div class="fila">
+                <label>Teléfono (opcional)
+                    <input th:field="*{telefono}" maxlength="10" inputmode="numeric" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></span>
+                </label>
+                <label>Correo (opcional)
+                    <input th:field="*{correo}" maxlength="100" th:errorclass="invalido">
+                    <span class="campo-error" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></span>
+                </label>
+            </div>
+            <div class="botones">
+                <a class="btn secundario" th:href="@{/proveedores}">Cancelar</a>
+                <button class="btn" type="submit">Guardar</button>
+            </div>
+        </form>
+    </section>
+</main>
+<footer th:replace="~{fragmentos :: pie}"></footer>
+</body>
+</html>

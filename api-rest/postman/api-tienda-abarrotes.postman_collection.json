@@ -1,0 +1,1804 @@
+{
+  "info": {
+    "name": "API Tienda de Abarrotes (GA7-AA5-EV03/EV04)",
+    "description": "Pruebas de la API REST del sistema de inventario y ventas. Mauricio Vargas - Ficha 3186699",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "01 Verificar que la API está activa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/salud",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "salud"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok = true\", () => pm.expect(pm.response.json().ok).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Login administrador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"mvargas\",\n  \"clave\": \"Admin2026*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Mensaje de autenticación satisfactoria\", () => pm.expect(pm.response.json().mensaje).to.include(\"satisfactoria\"));",
+                  "pm.test(\"Rol Administrador\", () => pm.expect(pm.response.json().usuario.rol).to.eql(\"Administrador\"));",
+                  "pm.collectionVariables.set(\"tokenAdmin\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Login con contraseña incorrecta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"mvargas\",\n  \"clave\": \"ClaveMala1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"ok = false\", () => pm.expect(pm.response.json().ok).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Login cajero",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"princon\",\n  \"clave\": \"Caja2026*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Rol Cajero\", () => pm.expect(pm.response.json().usuario.rol).to.eql(\"Cajero\"));",
+                  "pm.collectionVariables.set(\"tokenCajero\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 Consultar productos sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Perfil del usuario del token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/perfil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "perfil"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve el usuario\", () => pm.expect(pm.response.json().usuario.nombre).to.eql(\"Mauricio Vargas\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Productos",
+      "item": [
+        {
+          "name": "07 Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Hay productos\", () => pm.expect(pm.response.json().total).to.be.at.least(8));",
+                  "pm.test(\"Tiempo menor a 1 s\", () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Buscar productos por nombre",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos?q=arroz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "arroz"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Todos contienen arroz\", () => pm.response.json().datos.forEach(p => pm.expect(p.nombre.toLowerCase()).to.include(\"arroz\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 Productos por reponer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos?porReponer=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "porReponer",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Todos están en el mínimo o por debajo\", () => pm.response.json().datos.forEach(p => pm.expect(p.stock).to.be.at.most(p.stockMinimo)));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 Consultar producto por id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es el producto 1\", () => pm.expect(pm.response.json().datos.idProducto).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11 Consultar producto inexistente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "9999"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 Consultar producto con id no numérico",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "abc"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13 Crear producto válido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoBarras\": \"{{codigoNuevo}}\",\n  \"nombre\": \"Lentejas 500 g\",\n  \"unidadMedida\": \"Unidad\",\n  \"precioCompra\": 3200,\n  \"precioVenta\": 4100,\n  \"stock\": 30,\n  \"stockMinimo\": 8,\n  \"idCategoria\": 1,\n  \"idProveedor\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));",
+                  "const d = pm.response.json().datos;",
+                  "pm.test(\"Se creó con id\", () => pm.expect(d.idProducto).to.be.a(\"number\"));",
+                  "pm.test(\"Categoría Granos\", () => pm.expect(d.categoria).to.eql(\"Granos\"));",
+                  "pm.collectionVariables.set(\"idProductoNuevo\", d.idProducto);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"codigoNuevo\", \"77099\" + String(Date.now()).slice(-8));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14 Crear producto con datos inválidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoBarras\": \"12ab\",\n  \"nombre\": \"X\",\n  \"unidadMedida\": \"Bulto\",\n  \"precioCompra\": 5000,\n  \"precioVenta\": 4000,\n  \"stockMinimo\": -1,\n  \"idCategoria\": 1,\n  \"idProveedor\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve la lista de errores\", () => pm.expect(pm.response.json().errores.length).to.be.at.least(5));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15 Crear producto con código repetido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoBarras\": \"7702001000011\",\n  \"nombre\": \"Arroz premium 1 kg\",\n  \"unidadMedida\": \"Unidad\",\n  \"precioCompra\": 4500,\n  \"precioVenta\": 5600,\n  \"stockMinimo\": 5,\n  \"idCategoria\": 1,\n  \"idProveedor\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 Cajero intenta crear un producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoBarras\": \"7709900000001\",\n  \"nombre\": \"Sal 1 kg\",\n  \"unidadMedida\": \"Unidad\",\n  \"precioCompra\": 1200,\n  \"precioVenta\": 1600,\n  \"stockMinimo\": 5,\n  \"idCategoria\": 1,\n  \"idProveedor\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "17 Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{idProductoNuevo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{idProductoNuevo}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoBarras\": \"{{codigoNuevo}}\",\n  \"nombre\": \"Lentejas 500 g\",\n  \"unidadMedida\": \"Unidad\",\n  \"precioCompra\": 3200,\n  \"precioVenta\": 4300,\n  \"stockMinimo\": 10,\n  \"idCategoria\": 1,\n  \"idProveedor\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Nuevo precio de venta\", () => pm.expect(pm.response.json().datos.precioVenta).to.eql(4300));",
+                  "pm.test(\"El stock no cambia\", () => pm.expect(pm.response.json().datos.stock).to.eql(30));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "18 Eliminar producto con ventas (restringido)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Explica la restricción\", () => pm.expect(pm.response.json().mensaje).to.include(\"movimientos\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "19 Eliminar producto nuevo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{idProductoNuevo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{idProductoNuevo}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Clientes",
+      "item": [
+        {
+          "name": "20 Listar clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Incluye Consumidor final\", () => pm.expect(pm.response.json().datos.map(c => c.nombre)).to.include(\"Consumidor final\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "21 Registrar cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"{{documentoNuevo}}\",\n  \"nombre\": \"Jorge Díaz\",\n  \"telefono\": \"3209998877\",\n  \"direccion\": \"Calle 10 # 5-20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"idClienteNuevo\", pm.response.json().datos.idCliente);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"documentoNuevo\", String(Date.now()).slice(-10));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "22 Registrar cliente con documento inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"12-AB\",\n  \"nombre\": \"Jo\",\n  \"telefono\": \"311ABC\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Tres errores\", () => pm.expect(pm.response.json().errores.length).to.eql(3));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "23 Registrar cliente con documento repetido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"1130123456\",\n  \"nombre\": \"Otra Persona\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "24 Actualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idClienteNuevo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idClienteNuevo}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"{{documentoNuevo}}\",\n  \"nombre\": \"Jorge Díaz Pérez\",\n  \"telefono\": \"3209998877\",\n  \"direccion\": \"Calle 12 # 8-30\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Nombre actualizado\", () => pm.expect(pm.response.json().datos.nombre).to.eql(\"Jorge Díaz Pérez\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Ventas",
+      "item": [
+        {
+          "name": "25 Registrar venta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": {{idClienteNuevo}},\n  \"idMetodo\": 2,\n  \"items\": [\n    { \"idProducto\": 1, \"cantidad\": 2 },\n    { \"idProducto\": 8, \"cantidad\": 1 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));",
+                  "const v = pm.response.json().datos;",
+                  "pm.test(\"Total = 2 x 4.800 + 3.500\", () => pm.expect(v.total).to.eql(13100));",
+                  "pm.test(\"Registra al cajero del token\", () => pm.expect(v.cajero).to.eql(\"Paola Rincón\"));",
+                  "pm.collectionVariables.set(\"idVentaNueva\", v.idVenta);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "26 Venta con stock insuficiente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idMetodo\": 1,\n  \"items\": [\n    {\n      \"idProducto\": 5,\n      \"cantidad\": 500\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Mensaje de stock\", () => pm.expect(pm.response.json().mensaje).to.include(\"Stock insuficiente\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "27 Venta sin productos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idMetodo\": 1,\n  \"items\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "28 Consultar venta con detalle",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVentaNueva}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVentaNueva}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Tiene 2 productos\", () => pm.expect(pm.response.json().datos.items.length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "29 Listar ventas por rango de fechas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas?desde=2026-10-01&hasta=2026-10-06",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ],
+              "query": [
+                {
+                  "key": "desde",
+                  "value": "2026-10-01"
+                },
+                {
+                  "key": "hasta",
+                  "value": "2026-10-06"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"6 ventas de ejemplo\", () => pm.expect(pm.response.json().total).to.eql(6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "30 Listar ventas con fecha inválida",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas?desde=01/10/2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ],
+              "query": [
+                {
+                  "key": "desde",
+                  "value": "01/10/2026"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "31 Cajero intenta anular una venta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVentaNueva}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVentaNueva}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "32 Anular venta (devuelve el stock)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVentaNueva}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVentaNueva}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Compras",
+      "item": [
+        {
+          "name": "33 Registrar compra a proveedor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/compras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "compras"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProveedor\": 2,\n  \"numeroFactura\": \"{{facturaNueva}}\",\n  \"items\": [\n    { \"idProducto\": 5, \"cantidad\": 12, \"costoUnitario\": 9200 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"facturaNueva\", \"LV-\" + String(Date.now()).slice(-6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "34 Compra con factura repetida",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/compras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "compras"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProveedor\": 2,\n  \"numeroFactura\": \"{{facturaNueva}}\",\n  \"items\": [\n    { \"idProducto\": 4, \"cantidad\": 6, \"costoUnitario\": 3400 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "35 Cajero intenta ver compras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/compras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "compras"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "36 Listar compras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/compras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "compras"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Catálogos y reportes",
+      "item": [
+        {
+          "name": "37 Categorías",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"6 categorías\", () => pm.expect(pm.response.json().total).to.eql(6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "38 Proveedores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "39 Métodos de pago",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenCajero}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/metodos-pago",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "metodos-pago"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Incluye Nequi\", () => pm.expect(pm.response.json().datos.map(m => m.nombre)).to.include(\"Nequi\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "40 Reporte de ventas diarias",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reportes/ventas-diarias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "ventas-diarias"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "41 Reporte de productos más vendidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reportes/mas-vendidos?limite=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "mas-vendidos"
+              ],
+              "query": [
+                {
+                  "key": "limite",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve 3\", () => pm.expect(pm.response.json().total).to.eql(3));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "42 Ruta inexistente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/no-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "no-existe"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "43 Eliminar cliente de prueba (sin ventas activas)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idClienteNuevo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idClienteNuevo}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "tokenAdmin",
+      "value": ""
+    },
+    {
+      "key": "tokenCajero",
+      "value": ""
+    },
+    {
+      "key": "codigoNuevo",
+      "value": ""
+    },
+    {
+      "key": "idProductoNuevo",
+      "value": ""
+    },
+    {
+      "key": "documentoNuevo",
+      "value": ""
+    },
+    {
+      "key": "idClienteNuevo",
+      "value": ""
+    },
+    {
+      "key": "idVentaNueva",
+      "value": ""
+    },
+    {
+      "key": "facturaNueva",
+      "value": ""
+    }
+  ]
+}

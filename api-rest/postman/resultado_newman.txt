@@ -1,0 +1,229 @@
+newman
+
+API Tienda de Abarrotes (GA7-AA5-EV03/EV04)
+
+❏ 1. Autenticación
+↳ 01 Verificar que la API está activa
+  GET http://localhost:3000/api/salud [200 OK, 469B, 33ms]
+  ✓  Código de estado 200
+  ✓  ok = true
+
+↳ 02 Login administrador
+  POST http://localhost:3000/api/auth/login [200 OK, 753B, 8ms]
+  ✓  Código de estado 200
+  ✓  Mensaje de autenticación satisfactoria
+  ✓  Rol Administrador
+
+↳ 03 Login con contraseña incorrecta
+  POST http://localhost:3000/api/auth/login [401 Unauthorized, 486B, 5ms]
+  ✓  Código de estado 401
+  ✓  ok = false
+
+↳ 04 Login cajero
+  POST http://localhost:3000/api/auth/login [200 OK, 732B, 4ms]
+  ✓  Código de estado 200
+  ✓  Rol Cajero
+
+↳ 05 Consultar productos sin token
+  GET http://localhost:3000/api/productos [401 Unauthorized, 484B, 3ms]
+  ✓  Código de estado 401
+
+↳ 06 Perfil del usuario del token
+  GET http://localhost:3000/api/auth/perfil [200 OK, 503B, 5ms]
+  ✓  Código de estado 200
+  ✓  Devuelve el usuario
+
+❏ 2. Productos
+↳ 07 Listar productos
+  GET http://localhost:3000/api/productos [200 OK, 2.63kB, 4ms]
+  ✓  Código de estado 200
+  ✓  Hay productos
+  ✓  Tiempo menor a 1 s
+
+↳ 08 Buscar productos por nombre
+  GET http://localhost:3000/api/productos?q=arroz [200 OK, 701B, 5ms]
+  ✓  Código de estado 200
+  ✓  Todos contienen arroz
+
+↳ 09 Productos por reponer
+  GET http://localhost:3000/api/productos?porReponer=true [200 OK, 699B, 6ms]
+  ✓  Código de estado 200
+  ✓  Todos están en el mínimo o por debajo
+
+↳ 10 Consultar producto por id
+  GET http://localhost:3000/api/productos/1 [200 OK, 689B, 11ms]
+  ✓  Código de estado 200
+  ✓  Es el producto 1
+
+↳ 11 Consultar producto inexistente
+  GET http://localhost:3000/api/productos/9999 [404 Not Found, 444B, 3ms]
+  ✓  Código de estado 404
+
+↳ 12 Consultar producto con id no numérico
+  GET http://localhost:3000/api/productos/abc [400 Bad Request, 465B, 2ms]
+  ✓  Código de estado 400
+
+↳ 13 Crear producto válido
+  POST http://localhost:3000/api/productos [201 Created, 719B, 5ms]
+  ✓  Código de estado 201
+  ✓  Se creó con id
+  ✓  Categoría Granos
+
+↳ 14 Crear producto con datos inválidos
+  POST http://localhost:3000/api/productos [400 Bad Request, 732B, 3ms]
+  ✓  Código de estado 400
+  ✓  Devuelve la lista de errores
+
+↳ 15 Crear producto con código repetido
+  POST http://localhost:3000/api/productos [409 Conflict, 494B, 4ms]
+  ✓  Código de estado 409
+
+↳ 16 Cajero intenta crear un producto
+  POST http://localhost:3000/api/productos [403 Forbidden, 481B, 3ms]
+  ✓  Código de estado 403
+
+↳ 17 Actualizar producto
+  PUT http://localhost:3000/api/productos/9 [200 OK, 720B, 8ms]
+  ✓  Código de estado 200
+  ✓  Nuevo precio de venta
+  ✓  El stock no cambia
+
+↳ 18 Eliminar producto con ventas (restringido)
+  DELETE http://localhost:3000/api/productos/1 [409 Conflict, 482B, 5ms]
+  ✓  Código de estado 409
+  ✓  Explica la restricción
+
+↳ 19 Eliminar producto nuevo
+  DELETE http://localhost:3000/api/productos/9 [200 OK, 432B, 4ms]
+  ✓  Código de estado 200
+
+❏ 3. Clientes
+↳ 20 Listar clientes
+  GET http://localhost:3000/api/clientes [200 OK, 926B, 3ms]
+  ✓  Código de estado 200
+  ✓  Incluye Consumidor final
+
+↳ 21 Registrar cliente
+  POST http://localhost:3000/api/clientes [201 Created, 576B, 4ms]
+  ✓  Código de estado 201
+
+↳ 22 Registrar cliente con documento inválido
+  POST http://localhost:3000/api/clientes [400 Bad Request, 580B, 3ms]
+  ✓  Código de estado 400
+  ✓  Tres errores
+
+↳ 23 Registrar cliente con documento repetido
+  POST http://localhost:3000/api/clientes [409 Conflict, 494B, 3ms]
+  ✓  Código de estado 409
+
+↳ 24 Actualizar cliente
+  PUT http://localhost:3000/api/clientes/5 [200 OK, 579B, 7ms]
+  ✓  Código de estado 200
+  ✓  Nombre actualizado
+
+❏ 4. Ventas
+↳ 25 Registrar venta
+  POST http://localhost:3000/api/ventas [201 Created, 797B, 8ms]
+  ✓  Código de estado 201
+  ✓  Total = 2 x 4.800 + 3.500
+  ✓  Registra al cajero del token
+
+↳ 26 Venta con stock insuficiente
+  POST http://localhost:3000/api/ventas [409 Conflict, 455B, 8ms]
+  ✓  Código de estado 409
+  ✓  Mensaje de stock
+
+↳ 27 Venta sin productos
+  POST http://localhost:3000/api/ventas [400 Bad Request, 496B, 3ms]
+  ✓  Código de estado 400
+
+↳ 28 Consultar venta con detalle
+  GET http://localhost:3000/api/ventas/7 [200 OK, 762B, 4ms]
+  ✓  Código de estado 200
+  ✓  Tiene 2 productos
+
+↳ 29 Listar ventas por rango de fechas
+  GET http://localhost:3000/api/ventas?desde=2026-10-01&hasta=2026-10-06 [200 OK, 1.34kB, 5ms]
+  ✓  Código de estado 200
+  ✓  6 ventas de ejemplo
+
+↳ 30 Listar ventas con fecha inválida
+  GET http://localhost:3000/api/ventas?desde=01/10/2026 [400 Bad Request, 468B, 3ms]
+  ✓  Código de estado 400
+
+↳ 31 Cajero intenta anular una venta
+  DELETE http://localhost:3000/api/ventas/7 [403 Forbidden, 481B, 2ms]
+  ✓  Código de estado 403
+
+↳ 32 Anular venta (devuelve el stock)
+  DELETE http://localhost:3000/api/ventas/7 [200 OK, 465B, 6ms]
+  ✓  Código de estado 200
+
+❏ 5. Compras
+↳ 33 Registrar compra a proveedor
+  POST http://localhost:3000/api/compras [201 Created, 480B, 5ms]
+  ✓  Código de estado 201
+
+↳ 34 Compra con factura repetida
+  POST http://localhost:3000/api/compras [409 Conflict, 494B, 4ms]
+  ✓  Código de estado 409
+
+↳ 35 Cajero intenta ver compras
+  GET http://localhost:3000/api/compras [403 Forbidden, 481B, 2ms]
+  ✓  Código de estado 403
+
+↳ 36 Listar compras
+  GET http://localhost:3000/api/compras [200 OK, 958B, 4ms]
+  ✓  Código de estado 200
+
+❏ 6. Catálogos y reportes
+↳ 37 Categorías
+  GET http://localhost:3000/api/categorias [200 OK, 644B, 4ms]
+  ✓  Código de estado 200
+  ✓  6 categorías
+
+↳ 38 Proveedores
+  GET http://localhost:3000/api/proveedores [200 OK, 796B, 4ms]
+  ✓  Código de estado 200
+
+↳ 39 Métodos de pago
+  GET http://localhost:3000/api/metodos-pago [200 OK, 566B, 3ms]
+  ✓  Código de estado 200
+  ✓  Incluye Nequi
+
+↳ 40 Reporte de ventas diarias
+  GET http://localhost:3000/api/reportes/ventas-diarias [200 OK, 653B, 3ms]
+  ✓  Código de estado 200
+
+↳ 41 Reporte de productos más vendidos
+  GET http://localhost:3000/api/reportes/mas-vendidos?limite=3 [200 OK, 643B, 4ms]
+  ✓  Código de estado 200
+  ✓  Devuelve 3
+
+↳ 42 Ruta inexistente
+  GET http://localhost:3000/api/no-existe [404 Not Found, 459B, 2ms]
+  ✓  Código de estado 404
+
+↳ 43 Eliminar cliente de prueba (sin ventas activas)
+  DELETE http://localhost:3000/api/clientes/5 [200 OK, 431B, 7ms]
+  ✓  Código de estado 200
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │              43 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │              43 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               3 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │              71 │               0 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 910ms                                   │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 11.22kB (approx)                       │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 5ms [min: 2ms, max: 33ms, s.d.: 4ms] │
+└─────────────────────────────────────────────────────────────┘

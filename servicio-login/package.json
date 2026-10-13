@@ -1,0 +1,28 @@
+{
+  "name": "servicio-login-tienda-abarrotes",
+  "version": "1.0.0",
+  "description": "Servicio web de registro e inicio de sesión (GA7-220501096-AA5-EV01)",
+  "main": "src/servidor.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/servidor.js",
+    "dev": "node --watch src/servidor.js",
+    "test:postman": "newman run postman/servicio-login.postman_collection.json -e postman/local.postman_environment.json"
+  },
+  "author": "Mauricio Vargas - Ficha 3186699",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.5"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

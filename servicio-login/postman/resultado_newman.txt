@@ -1,0 +1,76 @@
+newman
+
+Servicio de login - Tienda de Abarrotes (GA7-AA5-EV01)
+
+→ 01 Verificar que el servicio está activo
+  GET http://localhost:3001/api/salud [200 OK, 450B, 26ms]
+  ✓  Código de estado 200
+  ✓  Responde ok
+
+→ 02 Registro válido
+  POST http://localhost:3001/api/auth/registro [201 Created, 520B, 102ms]
+  ✓  Código de estado 201
+  ✓  Mensaje de registro
+  ✓  No devuelve la contraseña
+
+→ 03 Registro con usuario repetido
+  POST http://localhost:3001/api/auth/registro [409 Conflict, 463B, 4ms]
+  ✓  Código de estado 409
+  ✓  Indica que ya existe
+
+→ 04 Registro con datos inválidos
+  POST http://localhost:3001/api/auth/registro [400 Bad Request, 627B, 3ms]
+  ✓  Código de estado 400
+  ✓  Devuelve 3 errores de validación
+
+→ 05 Inicio de sesión correcto
+  POST http://localhost:3001/api/auth/login [200 OK, 704B, 95ms]
+  ✓  Código de estado 200
+  ✓  Autenticación satisfactoria
+  ✓  Entrega un token JWT
+
+→ 06 Inicio de sesión con contraseña incorrecta
+  POST http://localhost:3001/api/auth/login [401 Unauthorized, 473B, 91ms]
+  ✓  Código de estado 401
+  ✓  Error en la autenticación
+
+→ 07 Inicio de sesión con usuario inexistente
+  POST http://localhost:3001/api/auth/login [401 Unauthorized, 473B, 3ms]
+  ✓  Código de estado 401
+
+→ 08 Inicio de sesión sin datos
+  POST http://localhost:3001/api/auth/login [400 Bad Request, 438B, 2ms]
+  ✓  Código de estado 400
+
+→ 09 Perfil con token
+  GET http://localhost:3001/api/auth/perfil [200 OK, 473B, 5ms]
+  ✓  Código de estado 200
+  ✓  Devuelve el usuario del token
+
+→ 10 Perfil sin token
+  GET http://localhost:3001/api/auth/perfil [401 Unauthorized, 436B, 4ms]
+  ✓  Código de estado 401
+
+→ 11 JSON mal formado
+  POST http://localhost:3001/api/auth/login [400 Bad Request, 317B, 6ms]
+  ✓  Código de estado 400
+
+┌─────────────────────────┬───────────────────┬──────────────────┐
+│                         │          executed │           failed │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              iterations │                 1 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│                requests │                11 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│            test-scripts │                11 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│      prerequest-scripts │                 1 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              assertions │                20 │                0 │
+├─────────────────────────┴───────────────────┴──────────────────┤
+│ total run duration: 573ms                                      │
+├────────────────────────────────────────────────────────────────┤
+│ total data received: 1.31kB (approx)                           │
+├────────────────────────────────────────────────────────────────┤
+│ average response time: 31ms [min: 2ms, max: 102ms, s.d.: 40ms] │
+└────────────────────────────────────────────────────────────────┘

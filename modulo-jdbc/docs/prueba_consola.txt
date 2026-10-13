@@ -1,0 +1,157 @@
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: ------------------------------------------------------------------------------------------------
+ID   CÓDIGO         NOMBRE                   CATEGORÍA     P. COMPRA   P. VENTA  STOCK
+------------------------------------------------------------------------------------------------
+3    7702001000035  Aceite vegetal 1 L       Aceites        10500.00   12500.00     18
+1    7702001000011  Arroz blanco 1 kg        Granos          3900.00    4800.00     43
+2    7702001000028  Fríjol rojo 500 g        Granos          4200.00    5300.00     27
+6    7702001000066  Gaseosa 1.5 L            Bebidas         3600.00    4500.00     19
+7    7702001000073  Jabón en barra           Aseo            2100.00    2800.00     23
+4    7702001000042  Leche entera 1 L         Lácteos         3400.00    4200.00     27
+8    7702001000080  Panela 500 g             Endulzantes     2700.00    3500.00     37
+5    7702001000059  Queso campesino 500 g    Lácteos         9000.00   11500.00      3
+------------------------------------------------------------------------------------------------
+8 producto(s).
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Nombre o código a buscar: ------------------------------------------------------------------------------------------------
+ID   CÓDIGO         NOMBRE                   CATEGORÍA     P. COMPRA   P. VENTA  STOCK
+------------------------------------------------------------------------------------------------
+4    7702001000042  Leche entera 1 L         Lácteos         3400.00    4200.00     27
+------------------------------------------------------------------------------------------------
+1 producto(s).
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: --- Registrar producto ---
+Código de barras: Nombre: Unidad de medida (Unidad, Kg, Libra, Litro, Paquete): Precio de compra: Precio de venta: Stock mínimo: Categorías:
+  1. Granos
+  2. Aceites
+  3. Lácteos
+  4. Bebidas
+  5. Aseo
+  6. Endulzantes
+Id de la categoría: Id del proveedor (1 a 3): Stock inicial: No se guardó el producto:
+  - El código de barras debe tener entre 8 y 13 dígitos.
+  - El nombre debe tener entre 3 y 80 caracteres.
+  - La unidad de medida debe ser una de: Unidad, Kg, Libra, Litro, Paquete.
+  - El precio de venta no puede ser menor que el precio de compra.
+  - El stock y el stock mínimo no pueden ser negativos.
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: --- Registrar producto ---
+Código de barras: Nombre: Unidad de medida (Unidad, Kg, Libra, Litro, Paquete): Precio de compra: Precio de venta: Stock mínimo: Categorías:
+  1. Granos
+  2. Aceites
+  3. Lácteos
+  4. Bebidas
+  5. Aseo
+  6. Endulzantes
+Id de la categoría: Id del proveedor (1 a 3): Stock inicial: Producto registrado con id 9.
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Id del producto a actualizar: Producto actual: Sal refinada 1 kg
+Código de barras: Nombre: Unidad de medida (Unidad, Kg, Libra, Litro, Paquete): Precio de compra: Precio de venta: Stock mínimo: Categorías:
+  1. Granos
+  2. Aceites
+  3. Lácteos
+  4. Bebidas
+  5. Aseo
+  6. Endulzantes
+Id de la categoría: Id del proveedor (1 a 3): Producto actualizado.
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Nombre o código a buscar: ------------------------------------------------------------------------------------------------
+ID   CÓDIGO         NOMBRE                   CATEGORÍA     P. COMPRA   P. VENTA  STOCK
+------------------------------------------------------------------------------------------------
+9    7702001000097  Sal refinada 1 kg        Aceites         1300.00    1800.00     20
+------------------------------------------------------------------------------------------------
+1 producto(s).
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Productos por reponer:
+------------------------------------------------------------------------------------------------
+ID   CÓDIGO         NOMBRE                   CATEGORÍA     P. COMPRA   P. VENTA  STOCK
+------------------------------------------------------------------------------------------------
+5    7702001000059  Queso campesino 500 g    Lácteos         9000.00   11500.00      3
+------------------------------------------------------------------------------------------------
+1 producto(s).
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Id del producto a eliminar: ¿Eliminar "Arroz blanco 1 kg"? (s/n): No se puede eliminar: el producto tiene ventas o compras registradas.
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Id del producto a eliminar: ¿Eliminar "Sal refinada 1 kg"? (s/n): Producto eliminado.
+
+=== TIENDA DE ABARROTES - INVENTARIO ===
+1. Listar productos
+2. Buscar producto
+3. Registrar producto
+4. Actualizar producto
+5. Eliminar producto
+6. Productos por reponer
+0. Salir
+Seleccione una opción: Hasta pronto.
